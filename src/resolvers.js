@@ -1,5 +1,5 @@
-import {tasks} from "./sample.js"
 import User from "./models/User.js" 
+import Task from "./models/Task.js"
 
 export const resolvers = {
     Query: {
@@ -10,18 +10,18 @@ export const resolvers = {
             console.log(ctx)
             return `Helloo! ${name}`
         },
-        tasks(){
-            return tasks
+        async tasks(){
+            return await Task.find()
         },
         async users(){
             return await User.find()
         }
     },
     Mutation: {
-        createTask(_, { input }){
-            input._id = tasks.length;
-            tasks.push(input)
-            return input
+        async createTask(_, { input }){
+            const newTask = new Task(input)
+            await newTask.save()
+            return newTask;
         },
         async createUser(_, {input}){
             const newUser = new User(input)
